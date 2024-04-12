@@ -5,7 +5,9 @@
 ## 0x01 介绍
 
 功能：包括域名ip历史解析、nmap常见端口爆破、子域名信息收集、旁站信息收集、whois信息收集、网站架构分析、cms解析、备案号信息收集、CDN信息解析、是否存在waf检测、后台寻找以及生成检测结果html报告表等。
-增加web端功能
+增加web端功能。
+
+## 0x02 补充
 基于kracer127/SiteScan源项目进行的二次开发；
 增加了web端使用功能；
 支持web端输入数据自动进行信息收集；
@@ -13,7 +15,7 @@
 支持在线查询信息收集报表；
 http://ip:8124/index
 
-## 0x02 安装使用
+## 0x03 安装使用
 
 1、所需库安装
 
@@ -43,5 +45,5 @@ pip3 install -r requirements.txt
 
 
 
-## 0x03 参考
+## 0x04 参考
 https://github.com/kracer127/SiteScan/releases/tag/v.1.5 
