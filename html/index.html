@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiteScan_Web</title>
+        <meta charset="UTF-8">
+        <style>
+            h2 {
+                border-top: 1px solid #ccc;
+                padding-top: 20px;
+                margin-top: 40px;
+            }
+
+            form {
+                margin-bottom: 40px;
+            }
+
+            label, input, select {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .inline-selects {
+                display: flex;
+                align-items: center;
+            }
+
+            .select-label {
+                margin-right: 10px;
+            }
+        </style>
+<style>
+        .accordion-content {
+    display: none;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+    max-width: 40%;
+}
+
+.accordion-header {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    max-width: 25%;
+    font-weight: bold;
+}
+textarea {
+    width: 90%; /* 或者其他你需要的宽度 */
+    resize: vertical; /* 只允许垂直调整大小 */
+}
+h3 {
+    font-size: 15px; /* 调整字体大小 */
+    color: #333; /* 调整字体颜色 */
+    font-weight: bold; /* 设置字体加粗 */
+    margin-bottom: 10px; /* 设置标题下方的间距 */
+}
+a {
+    font-size: 20px; /* 调整字体大小 */
+    color: #333; /* 调整字体颜色 */
+    font-weight: bold; /* 设置字体加粗 */
+    margin-bottom: 10px; /* 设置标题下方的间距 */
+}
+/* 使accordion-header的宽度响应式 */
+@media screen and (max-width: 768px) {
+    .accordion-header {
+        max-width: 100%; /* 当屏幕较小，宽度设为100% */
+    }
+    .accordion-content {
+        max-width: 100%; /* 当屏幕较小，宽度设为100% */
+    }
+}
+</style>
+</head>
+<body>
+        <h1>SiteScan_Web在线信息收集工具</h1>
+
+        <style>
+            #resultFrame {
+        position: fixed; /* 设置 <iframe> 固定定位 */
+        top: 10px; /* 设置 <iframe> 顶部距离 */
+        right: 10px; /* 设置 <iframe> 右侧距离 */
+        width: 50%;
+        height: 300px;
+        }
+        </style>
+        <div id="formContainer">
+            <a href="/files">查看扫描报表</a>
+        <div class="accordion-header" onclick="toggleAccordion('accordion1')">单地址信息收集</div>
+        <div class="accordion-content" id="accordion1">
+        <form id="myForm" data-api="web_sitescan" enctype="application/x-www-form-urlencoded; charset=UTF-8" method="POST">
+            <h3>链接: </h3>
+            <textarea name="web_url" rows="4" cols="40"></textarea>
+
+            <input type="submit" value="检测" />
+        </form>
+        </div>
+
+        <div class="accordion-header" onclick="toggleAccordion('accordion2')">批量信息收集</div>
+        <div class="accordion-content" id="accordion2">
+        <form id="myForm" data-api="web_sitescan_file" method="POST" enctype="multipart/form-data">
+            <input type="file" name="web_urls_file">
+            <button type="submit">批量收集</button>
+        </form>
+        </div>
+
+
+        </div>
+        <script>
+        // 获取当前页面的主机名和端口号
+        var host = window.location.hostname;
+        var port = window.location.port;
+
+        // 获取所有带有 data-api 属性的表单元素
+        var forms = document.querySelectorAll('form[data-api]');
+
+        // 遍历每个表单并更新 action 属性
+        for (var i = 0; i < forms.length; i++) {
+            var form = forms[i];
+            var api = form.getAttribute('data-api');
+            var newAction = "http://" + host + ":" + port + "/" + api;
+            form.action = newAction;
+        }
+        </script>
+
+        <iframe id="resultFrame" ></iframe>
+
+        <script>
+        function toggleAccordion(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        }
+        document.getElementById("formContainer").addEventListener("submit", function(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+
+
+            var form = event.target;
+            var iframe = document.getElementById("resultFrame");
+            // 清空 <iframe> 的内容
+            iframe.contentDocument.body.innerHTML = '';
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form)
+            })
+            .then(function(response) {
+                return response.json(); // 解析响应为 JSON
+            })
+            .then(function(data) {
+                var jsonStr = JSON.stringify(data, null, 2); // 格式化 JSON
+                var pre = document.createElement("pre");
+                pre.textContent = jsonStr;
+                iframe.contentDocument.body.appendChild(pre); // 在 <iframe> 中显示格式化的 JSON
+            });
+        });
+    </script>
+
+        <p style="position: fixed; left: 0; right: 0; bottom: 0; text-align: center; margin: 0; padding: 10px; background-color: #f8f8f8;">powered by: Lem</p>
+</body>
+</html>
